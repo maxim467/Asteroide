@@ -74,7 +74,7 @@ public class VistaJuego extends View {
                 R.drawable.nave);
 
         drawableMisil = context.getResources().getDrawable(
-                R.drawable.misil1);
+                    R.drawable.misil1);
 
 
         nave = new Grafico(this, drawableNave);
