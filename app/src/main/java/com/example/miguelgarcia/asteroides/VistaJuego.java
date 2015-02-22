@@ -98,7 +98,7 @@ public class VistaJuego extends View {
     @Override protected void onSizeChanged(int ancho, int alto,
                                            int ancho_anter, int alto_anter) {
 
-        super.onSizeChanged(ancho, alto, ancho_anter, alto_anter); 
+        super.onSizeChanged(ancho, alto, ancho_anter, alto_anter);
 
         // Una vez que conocemos nuestro ancho y alto.
 
