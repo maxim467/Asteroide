@@ -68,7 +68,7 @@ public class VistaJuego extends View {
         Drawable drawableNave, drawableAsteroide, drawableMisil;
 
         drawableAsteroide = context.getResources().getDrawable(
-                R.drawable.asteroide1);
+                R.drawable.ruffles);
 
         drawableNave = context.getResources().getDrawable(
                 R.drawable.nave);
