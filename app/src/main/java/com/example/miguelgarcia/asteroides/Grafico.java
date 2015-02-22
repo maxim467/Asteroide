@@ -149,4 +149,6 @@ public class Grafico {
     public static int getMaxVelocidad() {
         return MAX_VELOCIDAD;
     }
+
+
 }

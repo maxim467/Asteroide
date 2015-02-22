@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.Vector;
@@ -30,6 +31,14 @@ public class VistaJuego extends View {
     private static int PERIODO_PROCESO = 50;
     // Cuando se realizó el último proceso
     private long ultimoProceso = 0;
+
+    // //// MISIL //////
+    private Grafico misil;
+    private static int PASO_VELOCIDAD_MISIL = 12;
+    private boolean misilActivo = false;
+    private int tiempoMisil;
+
+
 
 
     // Incremento estándar de giro y aceleración
@@ -64,8 +73,12 @@ public class VistaJuego extends View {
         drawableNave = context.getResources().getDrawable(
                 R.drawable.nave);
 
+        drawableMisil = context.getResources().getDrawable(
+                R.drawable.misil1);
+
 
         nave = new Grafico(this, drawableNave);
+        misil = new Grafico(this, drawableMisil);
 
         Asteroides = new Vector<Grafico>();
 
@@ -132,6 +145,9 @@ public class VistaJuego extends View {
             asteroide.dibujaGrafico(canvas);
 
         }
+        if (misilActivo) {
+            misil.dibujaGrafico(canvas);
+        }
         nave.dibujaGrafico(canvas);
 
     }
@@ -161,6 +177,22 @@ public class VistaJuego extends View {
         for (Grafico asteroide : Asteroides) {
             asteroide.incrementaPos(retardo);
         }
+
+        // Actualizamos posición de misil
+        if (misilActivo) {
+            misil.incrementaPos(retardo);
+            tiempoMisil-=retardo;
+            if (tiempoMisil < 0) {
+                misilActivo = false;
+            } else {
+                for (int i = 0; i < Asteroides.size(); i++)
+                    if (misil.verificaColision(Asteroides.elementAt(i))) {
+                        destruyeAsteroide(i);
+                        break;
+                    }
+            }
+        }
+
     }
 
     class ThreadJuego extends Thread {
@@ -193,6 +225,68 @@ public class VistaJuego extends View {
         }
         return procesada;
     }
+
+
+
+    private float mX=0, mY=0;
+    private boolean disparo=false;
+
+    @Override
+    public boolean onTouchEvent (MotionEvent event) {
+        super.onTouchEvent(event);
+        float x = event.getX();
+        float y = event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                disparo=true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = Math.abs(x - mX);
+                float dy = Math.abs(y - mY);
+                if (dy<6 && dx>6){
+                    giroNave = Math.round((x - mX) / 2);
+                    disparo = false;
+                } else if (dx<6 && dy>6){
+                    aceleracionNave = Math.round((mY - y) / 25);
+                    disparo = false;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                giroNave = 0;
+                aceleracionNave = 0;
+                if (disparo){
+                    ActivaMisil();
+                }
+                break;
+        }
+        mX=x; mY=y;
+        return true;
+    }
+
+
+
+    private void destruyeAsteroide(int i) {
+        Asteroides.remove(i);
+        misilActivo = false;
+    }
+
+    private void ActivaMisil() {
+
+        misil.setPosX(nave.getPosX() + nave.getAncho() / 2 - misil.getAncho()
+                / 2);
+        misil.setPosY(nave.getPosY() + nave.getAlto() / 2 - misil.getAlto() / 2);
+        misil.setAngulo(nave.getAngulo());
+        misil.setIncX(Math.cos(Math.toRadians(misil.getAngulo()))
+                * PASO_VELOCIDAD_MISIL);
+        misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo()))
+                * PASO_VELOCIDAD_MISIL);
+        tiempoMisil = (int) Math.min(
+                this.getWidth() / Math.abs(misil.getIncX()), this.getHeight()
+                        / Math.abs(misil.getIncY())) - 2;
+        misilActivo = true;
+    }
+
+
 
 
 }
