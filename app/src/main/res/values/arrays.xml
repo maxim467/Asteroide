@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="tiposGraficos">
+        <item>vectorial</item>
+        <item>bitmap</item>
+        <item>3D</item>
+    </string-array>
+    <string-array name="multijuga">
+        <item>Activar multijugador</item>
+        <item>Maximo de jugadores</item>
+        <item>Tipo de conexion</item>
+    </string-array>
+    <string-array name="tiposGraficosValores">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="tiposConexion">
+        <item>Bluetooth</item>
+        <item>Wi-Fi</item>
+        <item>Internet</item>
+    </string-array>
+</resources>
